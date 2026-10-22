@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "test:shopify-oauth": "node --test tests/shopify-oauth.cjs"
+    "test:shopify-oauth": "node --test tests/shopify-oauth.cjs",
+    "test:phone": "node --test tests/phone.cjs"
   },
   "engines": { "node": ">=22.0.0" },
   "dependencies": {
