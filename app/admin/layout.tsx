@@ -3,6 +3,7 @@ import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { LogoutButton } from "@/components/admin/LogoutButton";
 import { isDemoMode } from "@/lib/demo";
 import { isPanelAdmin } from "@/lib/adminPanel";
+import { TenziaMark } from "@/components/Logo";
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
   // In demo mode there is no Supabase session — show a placeholder admin identity.
@@ -19,18 +20,15 @@ export default async function AdminLayout({ children }: { children: React.ReactN
   const canManageShopify = !isDemoMode() && !!user && await isPanelAdmin(user.email);
 
   return (
-    <div className="admin-dark min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-white">
       {user && (
         <header className="border-b border-gray-200 bg-white">
-          <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3">
-            <div className="flex items-center gap-6">
-              <Link href="/admin/tiketi" className="flex items-center gap-2">
-                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-brand text-sm font-bold text-white">
-                  O
-                </div>
-                <span className="font-bold text-brand-700">Podrška — zamene i tiketi</span>
+          <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-x-6 gap-y-4 px-4 py-5">
+            <div className="flex flex-wrap items-center gap-x-8 gap-y-4">
+              <Link href="/admin/tiketi" aria-label="TENZIA — Podrška za zamene i refundacije" className="flex items-center text-black">
+                <TenziaMark className="h-auto w-[150px] shrink-0" />
               </Link>
-              <nav className="flex items-center gap-4 text-sm font-medium">
+              <nav aria-label="Navigacija podrške" className="flex items-center gap-4 text-sm font-medium">
                 <Link href="/admin/tiketi" className="text-gray-600 hover:text-brand-700">
                   Tiketi
                 </Link>
@@ -44,7 +42,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
           </div>
         </header>
       )}
-      <div className="mx-auto max-w-6xl px-4 py-6">{children}</div>
+      <div className="mx-auto max-w-6xl px-4 py-8 sm:py-12">{children}</div>
     </div>
   );
 }

@@ -1,18 +1,18 @@
 import type { Config } from "tailwindcss";
 
-// Ortomed brand color — change here to re-theme the whole app.
+// Match the TENZIA /pages/zamena storefront form.
 const brand = {
-  DEFAULT: "#4A7C8C",
-  50: "#EEF4F5",
-  100: "#DCE9EC",
-  200: "#B9D3D9",
-  300: "#96BDC6",
-  400: "#73A7B3",
-  500: "#4A7C8C",
-  600: "#3B6470",
-  700: "#2D4B54",
-  800: "#1E3238",
-  900: "#0F191C",
+  DEFAULT: "#000000",
+  50: "#FFFFFF",
+  100: "#F3F4F6",
+  200: "#D5D5D5",
+  300: "#B8B8B8",
+  400: "#767676",
+  500: "#000000",
+  600: "#414141",
+  700: "#000000",
+  800: "#000000",
+  900: "#000000",
 };
 
 const config: Config = {
@@ -21,6 +21,18 @@ const config: Config = {
     extend: {
       colors: {
         brand,
+        gray: {
+          200: "#D5D5D5",
+          400: "#999999",
+          500: "#767676",
+          600: "#000000",
+          700: "#000000",
+          800: "#000000",
+          900: "#000000",
+        },
+      },
+      fontFamily: {
+        sans: ['"Helvetica Neue"', "Helvetica", "Arial", "sans-serif"],
       },
       borderRadius: {
         xl: "1rem",

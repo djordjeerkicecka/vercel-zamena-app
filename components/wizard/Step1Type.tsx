@@ -14,7 +14,7 @@ export function Step1Type({ type, onChange, onNext }: Props) {
       <h1 className="text-lg font-bold text-gray-900">Izjava za zamenu/odustajanje od ugovora</h1>
       <p className="mt-2 text-sm leading-relaxed text-gray-600">
         Ovim putem izjavljujem da odustajem od Ugovora o kupovini zaključenog na daljinu (sajt:
-        www.ortomed.rs).
+        www.tenzia.co).
       </p>
 
       <div className="mt-6">

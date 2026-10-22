@@ -2,7 +2,7 @@ import type { Metadata, Viewport } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Ortomed — Zamene i refundacije",
+  title: "TENZIA — Zamene i refundacije",
   description: "Forma za podnošenje zahteva za zamenu artikla ili refundaciju novca.",
 };
 

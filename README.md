@@ -53,6 +53,12 @@ fiktivnim podacima.
 3. Kupcima daješ link `https://tvoj-domen/zahtev`, support koristi `/admin/tiketi`.
 
 ## Brendiranje
+
+Interfejs prati TENZIA Shopify stranicu `/pages/zamena`: crno-belu paletu,
+Helvetica Neue tipografiju, kartice zaobljene 20px i kontrole zaobljene 16px.
+Forma za kupce, prijava, potvrda i admin panel koriste isti svetli izgled i
+vektorski TENZIA logo iz zaglavlja prodavnice.
+
 Nazivi/boje se menjaju na par mesta: `components/Logo.tsx`, `app/admin/layout.tsx`
 (naslov), `tailwind.config.ts` (boje `brand`), `app/layout.tsx` (naslov sajta),
 tekstovi u `components/wizard/` po želji.

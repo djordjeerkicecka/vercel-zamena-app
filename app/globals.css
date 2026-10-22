@@ -2,13 +2,29 @@
 @tailwind components;
 @tailwind utilities;
 
-html,
-body {
-  height: 100%;
-}
+@layer base {
+  html,
+  body {
+    min-height: 100%;
+  }
 
-body {
-  @apply bg-white text-gray-900;
+  html {
+    color-scheme: light;
+  }
+
+  body {
+    @apply bg-white font-sans text-gray-900 antialiased;
+  }
+
+  :focus-visible {
+    outline: 2px solid #000;
+    outline-offset: 3px;
+  }
+
+  input[type="checkbox"],
+  input[type="radio"] {
+    accent-color: #000;
+  }
 }
 
 @layer components {
@@ -17,92 +33,27 @@ body {
   }
 
   .btn-primary {
-    @apply inline-flex items-center justify-center rounded-xl bg-brand px-5 py-3 text-sm font-semibold text-white transition hover:bg-brand-600 disabled:cursor-not-allowed disabled:opacity-50;
+    @apply inline-flex items-center justify-center rounded-xl bg-brand px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-brand-600 disabled:cursor-not-allowed disabled:opacity-50;
   }
 
   .btn-secondary {
-    @apply inline-flex items-center justify-center rounded-xl border border-gray-300 bg-white px-5 py-3 text-sm font-semibold text-gray-700 transition hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50;
+    @apply inline-flex items-center justify-center rounded-xl border border-gray-200 bg-white px-5 py-3 text-sm font-semibold text-gray-900 transition-colors hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50;
   }
 
   .btn-danger {
-    @apply inline-flex items-center justify-center rounded-xl bg-red-600 px-5 py-3 text-sm font-semibold text-white transition hover:bg-red-700 disabled:cursor-not-allowed disabled:opacity-50;
+    @apply inline-flex items-center justify-center rounded-xl bg-red-600 px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-red-700 disabled:cursor-not-allowed disabled:opacity-50;
   }
 
   .form-label {
-    @apply mb-1.5 block text-sm font-medium text-gray-700;
+    @apply mb-1.5 block text-sm font-medium text-gray-900;
   }
 
   .form-input {
-    /* 16px on mobile (text-base) prevents iOS Safari from auto-zooming into the field on focus,
-       which otherwise makes the page look zoomed and pannable. 14px (text-sm) on desktop keeps the look. */
-    @apply block w-full rounded-xl border border-gray-300 px-3.5 py-2.5 text-base text-gray-900 placeholder:text-gray-400 focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand-200 sm:text-sm;
+    /* 16px prevents iOS zoom on focus; the storefront uses 14px on desktop. */
+    @apply block w-full rounded-xl border border-gray-300 bg-white px-3.5 py-2.5 text-base text-gray-900 placeholder:text-gray-400 focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand sm:text-sm;
   }
 
   .form-error {
     @apply mt-1.5 text-sm text-red-600;
   }
 }
-
-/* ===========================================================================
-   Dark theme for the admin dashboard only (.admin-dark on the admin layout root).
-   The public customer form stays light. These overrides re-map the light Tailwind
-   utilities used across admin components onto a dark palette.
-   =========================================================================== */
-
-.admin-dark { background-color: #0f1620; color: #e5e9ec; }
-
-.admin-dark .bg-gray-50 { background-color: #0f1620 !important; }
-.admin-dark .bg-white { background-color: #1a2330 !important; }
-.admin-dark .bg-gray-100 { background-color: #2a3648 !important; }
-.admin-dark .bg-gray-900 { background-color: #e5e9ec !important; color: #111827 !important; }
-
-.admin-dark .text-white { color: #fff !important; }
-.admin-dark .text-gray-900 { color: #f1f4f6 !important; }
-.admin-dark .text-gray-800 { color: #e5e9ec !important; }
-.admin-dark .text-gray-700 { color: #cdd5dc !important; }
-.admin-dark .text-gray-600 { color: #aab6c0 !important; }
-.admin-dark .text-gray-500 { color: #8b98a5 !important; }
-.admin-dark .text-gray-400 { color: #6b7885 !important; }
-.admin-dark .text-gray-300 { color: #55606c !important; }
-
-.admin-dark .border-gray-100, .admin-dark .border-gray-200, .admin-dark .border-gray-300 { border-color: #2b3648 !important; }
-.admin-dark .divide-gray-100 > :not([hidden]) ~ :not([hidden]),
-.admin-dark .divide-gray-200 > :not([hidden]) ~ :not([hidden]) { border-color: #2b3648 !important; }
-.admin-dark .ring-gray-200 { --tw-ring-color: #2b3648 !important; }
-.admin-dark .shadow-sm { --tw-shadow-color: rgba(0,0,0,.5) !important; }
-
-.admin-dark .hover\:bg-gray-50:hover { background-color: #223047 !important; }
-.admin-dark .hover\:bg-gray-200:hover { background-color: #374357 !important; }
-.admin-dark .hover\:text-gray-800:hover { color: #e5e9ec !important; }
-
-.admin-dark .card { background-color: #1a2330; border-color: #2b3648; }
-.admin-dark .form-input,
-.admin-dark input.qty { background-color: #0f1620; border-color: #3a4757; color: #e5e9ec; }
-.admin-dark .form-input::placeholder { color: #5c6875; }
-.admin-dark .form-label { color: #cdd5dc; }
-.admin-dark .btn-secondary { background-color: #223047; color: #e5e9ec; border-color: #3a4757; }
-.admin-dark .btn-secondary:hover { background-color: #2a3a55; }
-
-/* Status / signal tints on dark ground */
-.admin-dark .bg-blue-100 { background-color: rgba(59,130,246,.18) !important; }
-.admin-dark .text-blue-700 { color: #93c5fd !important; }
-.admin-dark .bg-amber-50 { background-color: rgba(217,119,6,.12) !important; }
-.admin-dark .bg-amber-100 { background-color: rgba(217,119,6,.2) !important; }
-.admin-dark .text-amber-600, .admin-dark .text-amber-700 { color: #fbbf24 !important; }
-.admin-dark .text-amber-800 { color: #fcd34d !important; }
-.admin-dark .text-amber-500 { color: #f59e0b !important; }
-.admin-dark .border-amber-200, .admin-dark .border-amber-300 { border-color: #92600e !important; }
-.admin-dark .bg-green-100 { background-color: rgba(34,197,94,.16) !important; }
-.admin-dark .text-green-600, .admin-dark .text-green-700 { color: #6ee7a0 !important; }
-.admin-dark .border-green-200 { border-color: #14532d !important; }
-.admin-dark .hover\:bg-green-50:hover { background-color: rgba(34,197,94,.12) !important; }
-.admin-dark .bg-red-50, .admin-dark .bg-red-100 { background-color: rgba(239,68,68,.14) !important; }
-.admin-dark .text-red-600, .admin-dark .text-red-700, .admin-dark .text-red-800 { color: #fca5a5 !important; }
-.admin-dark .border-red-200 { border-color: #7f1d1d !important; }
-.admin-dark .hover\:text-red-500:hover { color: #f87171 !important; }
-.admin-dark .bg-brand-50 { background-color: rgba(74,124,140,.16) !important; }
-.admin-dark .border-brand-200, .admin-dark .border-brand-line { border-color: #33505a !important; }
-.admin-dark .text-brand-700 { color: #8fc1cf !important; }
-.admin-dark .text-brand-800 { color: #a5cbd6 !important; }
-.admin-dark .text-brand-600 { color: #7fb0bf !important; }
-.admin-dark .bg-black\/40 { background-color: rgba(0,0,0,.65) !important; }
