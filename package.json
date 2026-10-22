@@ -6,9 +6,12 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "test:shopify-oauth": "node --test tests/shopify-oauth.cjs"
   },
+  "engines": { "node": ">=22.0.0" },
   "dependencies": {
+    "@shopify/shopify-api": "15.0.1",
     "@supabase/ssr": "^0.5.2",
     "@supabase/supabase-js": "^2.45.4",
     "next": "14.2.35",

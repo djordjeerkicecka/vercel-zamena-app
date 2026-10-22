@@ -12,6 +12,27 @@ export interface ShopConfig {
   clientId?: string;
   clientSecret?: string;
   adminToken?: string; // legacy permanent token, if any
+  authMode?: "client_credentials" | "oauth";
+}
+
+/** Accept a bare Shopify domain or its root HTTPS URL; never allow paths or other hosts. */
+export function normalizeShopDomain(value: string): string {
+  const raw = value.trim().toLowerCase();
+  const url = new URL(raw.includes("://") ? raw : `https://${raw}`);
+  if (url.protocol !== "https:" || url.username || url.password || url.port ||
+      url.pathname !== "/" || url.search || url.hash ||
+      !/^[a-z0-9][a-z0-9-]{0,62}\.myshopify\.com$/.test(url.hostname)) {
+    throw new Error("SHOPIFY_STORE_DOMAIN mora biti domen prodavnice na myshopify.com.");
+  }
+  return url.hostname;
+}
+
+function authMode(value?: string): ShopConfig["authMode"] {
+  const mode = value?.trim() || "client_credentials";
+  if (mode !== "oauth" && mode !== "client_credentials") {
+    throw new Error("SHOPIFY_AUTH_MODE mora biti oauth ili client_credentials.");
+  }
+  return mode;
 }
 
 export function getConfiguredShops(): ShopConfig[] {
@@ -20,24 +41,26 @@ export function getConfiguredShops(): ShopConfig[] {
   const primaryDomain = process.env.SHOPIFY_STORE_DOMAIN;
   if (primaryDomain) {
     shops.push({
-      id: primaryDomain,
+      id: normalizeShopDomain(primaryDomain),
       name: process.env.SHOPIFY_SHOP_NAME || "Ortomed",
-      domain: primaryDomain,
-      clientId: process.env.SHOPIFY_CLIENT_ID,
-      clientSecret: process.env.SHOPIFY_CLIENT_SECRET,
+      domain: normalizeShopDomain(primaryDomain),
+      clientId: process.env.SHOPIFY_CLIENT_ID?.trim(),
+      clientSecret: process.env.SHOPIFY_CLIENT_SECRET?.trim(),
       adminToken: process.env.SHOPIFY_ADMIN_TOKEN,
+      authMode: authMode(process.env.SHOPIFY_AUTH_MODE),
     });
   }
 
   const secondDomain = process.env.SHOPIFY_STORE_DOMAIN_2;
   if (secondDomain) {
     shops.push({
-      id: secondDomain,
+      id: normalizeShopDomain(secondDomain),
       name: process.env.SHOPIFY_SHOP_NAME_2 || "Shop 2",
-      domain: secondDomain,
-      clientId: process.env.SHOPIFY_CLIENT_ID_2,
-      clientSecret: process.env.SHOPIFY_CLIENT_SECRET_2,
+      domain: normalizeShopDomain(secondDomain),
+      clientId: process.env.SHOPIFY_CLIENT_ID_2?.trim(),
+      clientSecret: process.env.SHOPIFY_CLIENT_SECRET_2?.trim(),
       adminToken: process.env.SHOPIFY_ADMIN_TOKEN_2,
+      authMode: authMode(process.env.SHOPIFY_AUTH_MODE_2),
     });
   }
 

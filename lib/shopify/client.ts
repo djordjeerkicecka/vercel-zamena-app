@@ -1,13 +1,10 @@
 // Server-side only Shopify Admin GraphQL client. Never import this from a Client Component —
 // the Shopify credentials must never reach the browser bundle.
 //
-// Since 1 Jan 2026 Shopify no longer issues permanent custom-app tokens (shpat_...). Apps
-// created in the new Dev Dashboard obtain a short-lived (24h) access token via the OAuth
-// "client credentials" grant, using the app's Client ID + Client Secret. We fetch that token
-// on demand and cache it in module memory (per shop) until shortly before it expires.
+// Collaborator/merchant stores use authorization-code OAuth with persisted offline tokens.
+// Client credentials remain available for stores owned by the app's Shopify organization.
 //
-// For backward compatibility, if a shop has a static admin token, it is used directly and no
-// token exchange happens.
+// Outside OAuth mode, a legacy static admin token is still used directly when configured.
 
 import { getConfiguredShops, getPrimaryShop, type ShopConfig } from "./shops";
 
@@ -18,7 +15,7 @@ interface ShopifyGraphQLResponse<T> {
   errors?: { message: string }[];
 }
 
-// Cached client-credentials tokens, keyed by shop id (domain). Shared across requests handled by
+// Cached client-credentials tokens, keyed by shop domain and Client ID. Shared across requests handled by
 // the same serverless instance; a cold start simply re-fetches.
 const cachedTokens = new Map<string, { token: string; expiresAt: number }>();
 
@@ -56,15 +53,21 @@ async function fetchClientCredentialsToken(
   return { token: json.access_token, expiresAt: Date.now() + expiresInMs - 5 * 60 * 1000 };
 }
 
-async function getAccessToken(shop: ShopConfig): Promise<string> {
-  if (shop.adminToken) return shop.adminToken;
+async function getAccessToken(shop: ShopConfig): Promise<{ token: string; oauthRevision?: string }> {
+  if (shop.authMode === "oauth") {
+    const { getOAuthAccess } = await import("./oauth-tokens");
+    const access = await getOAuthAccess(shop);
+    return { token: access.token, oauthRevision: access.revision };
+  }
+  if (shop.adminToken) return { token: shop.adminToken };
 
-  const cached = cachedTokens.get(shop.id);
-  if (cached && cached.expiresAt > Date.now()) return cached.token;
+  const key = `${shop.id}:${shop.clientId}`;
+  const cached = cachedTokens.get(key);
+  if (cached && cached.expiresAt > Date.now()) return { token: cached.token };
 
   const fresh = await fetchClientCredentialsToken(shop);
-  cachedTokens.set(shop.id, fresh);
-  return fresh.token;
+  cachedTokens.set(key, fresh);
+  return { token: fresh.token };
 }
 
 /** Runs a GraphQL query against a specific shop. */
@@ -73,21 +76,27 @@ export async function shopifyGraphQLForShop<T>(
   query: string,
   variables?: Record<string, unknown>
 ): Promise<T> {
-  const token = await getAccessToken(shop);
+  const access = await getAccessToken(shop);
 
   const res = await fetch(`https://${shop.domain}/admin/api/${API_VERSION}/graphql.json`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      "X-Shopify-Access-Token": token,
+      "X-Shopify-Access-Token": access.token,
     },
     body: JSON.stringify({ query, variables }),
     cache: "no-store",
   });
 
   if (!res.ok) {
-    // A stale cached token (e.g. revoked) surfaces as 401 — drop it so the next call re-fetches.
-    if (res.status === 401) cachedTokens.delete(shop.id);
+    // A 401 clears the client-credentials cache. A revoked OAuth connection needs reauthorization.
+    if (res.status === 401) {
+      cachedTokens.delete(`${shop.id}:${shop.clientId}`);
+      if (shop.authMode === "oauth" && access.oauthRevision) {
+        const { createOAuthConnectionStore } = await import("./oauth-storage");
+        await createOAuthConnectionStore().invalidate(shop, access.oauthRevision);
+      }
+    }
     throw new Error(`Shopify API greška (${shop.name}): ${res.status} ${res.statusText}`);
   }
 

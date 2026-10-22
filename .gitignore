@@ -9,7 +9,10 @@
 /build
 
 # supabase
-supabase
+/supabase/*
+!/supabase/migrations/
+/supabase/migrations/*
+!/supabase/migrations/0005_shopify_oauth.sql
 
 #13123123
 

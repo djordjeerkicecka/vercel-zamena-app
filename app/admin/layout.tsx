@@ -2,6 +2,7 @@ import Link from "next/link";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { LogoutButton } from "@/components/admin/LogoutButton";
 import { isDemoMode } from "@/lib/demo";
+import { isPanelAdmin } from "@/lib/adminPanel";
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
   // In demo mode there is no Supabase session — show a placeholder admin identity.
@@ -14,6 +15,8 @@ export default async function AdminLayout({ children }: { children: React.ReactN
     } = await supabase.auth.getUser();
     user = authUser;
   }
+
+  const canManageShopify = !isDemoMode() && !!user && await isPanelAdmin(user.email);
 
   return (
     <div className="admin-dark min-h-screen bg-gray-50">
@@ -31,6 +34,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
                 <Link href="/admin/tiketi" className="text-gray-600 hover:text-brand-700">
                   Tiketi
                 </Link>
+                {canManageShopify && <Link href="/admin/shopify" className="text-gray-600 hover:text-brand-700">Shopify veza</Link>}
               </nav>
             </div>
             <div className="flex items-center gap-4">

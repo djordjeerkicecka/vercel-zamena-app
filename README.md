@@ -11,6 +11,11 @@ Aplikacija za obradu zamena i reklamacija u COD Shopify prodavnici:
 
 Stack: Next.js 14 (App Router) + Supabase (baza, auth, storage) + Vercel.
 
+Za prodavnice kojima pristupate kao saradnik (collaborator), koristite OAuth umesto
+client-credentials grant-a. Implementacija i koraci aktivacije su opisani u
+[Shopify OAuth vodiču](docs/SHOPIFY_OAUTH.md). Podešavanja su u `.env.oauth.example`.
+Aktivacija koristi postojeći Supabase projekat i ne zahteva promene Shopify teme.
+
 ## Podešavanje (korak po korak)
 
 ### 1. Supabase
@@ -23,10 +28,11 @@ Stack: Next.js 14 (App Router) + Supabase (baza, auth, storage) + Vercel.
    `update app_settings set value = 'tvoj@mejl.com' where key = 'admin_panel_emails';`
 
 ### 2. Shopify
-1. U svom shopu: **Settings -> Apps and sales channels -> Develop apps -> Create an app**.
-2. Admin API scopes: `read_orders`, `read_products`.
-3. Prepiši **Client ID** i **Client secret** u `.env.local`
-   (app koristi token-exchange, ne stari trajni token).
+1. Koristi aplikaciju iz **Shopify Dev Dashboard** instaliranu na ciljnoj prodavnici.
+2. Admin API scopes: `read_orders`, `read_products`; za Shopify app proxy i `write_app_proxy`.
+3. Postavi odgovarajući **Client ID** i **Client secret** u serversko okruženje.
+4. Za prodavnicu u istoj Shopify organizaciji može se koristiti `client_credentials`.
+   Za saradničku prodavnicu prati [OAuth aktivaciju](docs/SHOPIFY_OAUTH.md).
 
 ### 3. SlanjePaketa
 1. Traži API token od SlanjePaketa podrške.
