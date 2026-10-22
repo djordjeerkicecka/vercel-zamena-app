@@ -177,7 +177,7 @@ export function KurirCard({ ticketId, ticketType, defaults, returnSkus, exchange
 
         {!pickup && (
           <button type="button" className="btn-primary w-full" onClick={() => openDialog("pickup")} disabled={busy}>
-            🚚 Zakaži preuzimanje od kupca
+            Zakaži preuzimanje od kupca
           </button>
         )}
 
@@ -206,7 +206,7 @@ export function KurirCard({ ticketId, ticketType, defaults, returnSkus, exchange
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4" onClick={() => !busy && setDialog(null)}>
           <div className="w-full max-w-md rounded-2xl bg-white p-5" onClick={(e) => e.stopPropagation()}>
             <h3 className="text-base font-bold text-gray-900">
-              {dialog === "pickup" ? "🚚 Zakaži preuzimanje od kupca" : "📦 Pošalji zamenu kupcu"}
+              {dialog === "pickup" ? "Zakaži preuzimanje od kupca" : "📦 Pošalji zamenu kupcu"}
             </h3>
             <p className="mt-1 text-xs text-gray-500">
               {dialog === "pickup"
