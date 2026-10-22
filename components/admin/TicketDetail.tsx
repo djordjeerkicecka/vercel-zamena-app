@@ -351,10 +351,10 @@ export function TicketDetail({ ticket, shopifyOrderUrl, prevTicketId, nextTicket
                   className="btn-primary"
                   onClick={() => setArchiveOutcome("zavrseno")}
                 >
-                  ✓ Zahtev završen
+                  Zahtev završen
                 </button>
                 <button type="button" className="btn-danger" onClick={() => setArchiveOutcome("odbijeno")}>
-                  ✗ Odbij zahtev
+                  Odbij zahtev
                 </button>
               </div>
             </div>
